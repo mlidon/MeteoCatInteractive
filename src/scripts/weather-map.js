@@ -3,11 +3,10 @@ import {
   weatherCodeToIcon
 } from "../utils/weatherIcons.js";
 
-
 // URLs de los recursos
-const MAP_URL = "/maps/catalunya-comarques.json";
-const WEATHER_URL = "/api/weather.json";
-const FALLBACK_IMAGE = "/cities/building.svg";
+const MAP_URL =  `${import.meta.env.BASE_URL}maps/catalunya-comarques.json`;
+const WEATHER_URL =  `${import.meta.env.BASE_URL}api/weather.json`;
+const FALLBACK_IMAGE = `${import.meta.env.BASE_URL}cities/building.svg`;
 
 // Elementos del mapa y estado
 const svg = document.querySelector("#catalunya-map");
@@ -66,11 +65,15 @@ async function initMap() {
 
     renderGeoJSON(geojson);
     statusEl.textContent = loadedRegionsText(geojson.features.length);
+    hideAppLoader();
   } catch (error) {
+    
     console.error("[map]", error);
     statusEl.textContent = "Error cargando el mapa";
+    hideAppLoader();
   }
 }
+
 
 async function loadMapData() {
   const response = await fetch(MAP_URL);
@@ -99,6 +102,17 @@ async function loadWeatherData() {
 }
 
 // Funciones de renderizado y lógica de interacción
+function hideAppLoader() {
+  const loader = document.querySelector("#app-loader");
+
+  if (!loader) return;
+
+  window.setTimeout(() => {
+    loader.classList.add("is-hidden");
+  }, 250);
+}
+
+
 function renderGeoJSON(geojson) {
   const bounds = getBounds(geojson);
   const projection = createProjection(bounds, 1000, 1000, 20);

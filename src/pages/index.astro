@@ -2,6 +2,8 @@
 import WeatherMap from "../components/WeatherMap.astro";
 import "../styles/global.css";
 import "../styles/weather-map.css";
+
+
 ---
 
 <html lang="es">
@@ -12,6 +14,22 @@ import "../styles/weather-map.css";
   </head>
 
   <body>
+    <!-- App Loader -->
+    <div class="app-loader" id="app-loader">
+      <div class="loader-card">
+        <div class="loader-mark">CM</div>
+
+        <div>
+          <strong>Catalunya Meteo</strong>
+          <p data-i18n="loadingApp">Loading weather data...</p>
+        </div>
+
+        <div class="loader-bar">
+          <span></span>
+        </div>
+      </div>
+    </div>
+
     <main class="app-shell">
       <header class="app-header">
         <a class="app-brand" href="/" aria-label="Catalunya Meteo Map">
@@ -153,11 +171,14 @@ import "../styles/weather-map.css";
       </div>
     </footer>
 
-    <script type="module" src="/src/scripts/language.js"></script>
-    <script type="module" src="/src/scripts/weather-map.js"></script>
-    <script type="module" src="/src/scripts/theme.js"></script>
-    <script type="module" src="/src/scripts/audio.js"></script>
-    <script type="module" src="/src/scripts/settings.js"></script>
+
+    <script>
+      import "../scripts/language.js";
+      import "../scripts/weather-map.js";
+      import "../scripts/theme.js";
+      import "../scripts/audio.js";
+      import "../scripts/settings.js";
+    </script>
     
   </body>
 </html>

@@ -32,7 +32,7 @@ import "@tabler/icons-webfont/dist/tabler-icons.min.css";
       <div class="map-tooltip" id="map-tooltip" aria-hidden="true">
         <strong id="tooltip-comarca">Comarca</strong>
         <small id="tooltip-capital">Capital</small>
-        <img id="tooltip-icon" src="/cities/building.svg" alt="" />
+        <img id="tooltip-icon" src={`${import.meta.env.BASE_URL}cities/building.svg`} alt="" />
         <span id="tooltip-temp">--°</span>
       </div>
     </div>
@@ -43,7 +43,7 @@ import "@tabler/icons-webfont/dist/tabler-icons.min.css";
       <img
         id="weather-image"
         class="weather-image"
-        src="/cities/building.svg"
+        src={`${import.meta.env.BASE_URL}cities/building.svg`}
         alt="Imagen de la capital seleccionada"
         loading="lazy"
         decoding="async"
@@ -67,7 +67,7 @@ import "@tabler/icons-webfont/dist/tabler-icons.min.css";
         <img
           id="panel-weather-icon"
           class="weather-icon"
-          src="/cities/building.svg"
+          src={`${import.meta.env.BASE_URL}cities/building.svg`}
           alt="Estado meteorológico"
           width="88"
           height="88"

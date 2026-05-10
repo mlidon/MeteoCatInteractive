@@ -1,6 +1,6 @@
 import { comarquesWeatherPoints } from "../../data/comarquesWeatherPoints.js";
 
-export const prerender = false;
+export const prerender = true;
 
 let cachedPayload = null;
 let cachedAt = 0;
