@@ -195,4 +195,4 @@ MIT License
 
 ## Author
 
-Developed by Marc.
+Developed by Marc Lidón.
