@@ -1,0 +1,122 @@
+---
+import WeatherMap from "../components/WeatherMap.astro";
+import "../styles/global.css";
+import "../styles/weather-map.css";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catalunya Meteo Map</title>
+  </head>
+
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <a class="app-brand" href="/" aria-label="Catalunya Meteo Map">
+          <span class="app-brand-mark">CM</span>
+
+          <span>
+            <strong data-i18n="app-brand">Catalunya Meteo</strong>
+            <small data-i18n="interactive-weather-map">
+              Interactive Weather Map
+            </small>
+          </span>
+        </a>
+
+        <div class="app-header-actions">
+          <!-- Switch Language -->
+          <div class="language-switcher" id="language-switcher">
+            <button class="language-option is-active" data-lang="es" type="button">
+              ES
+            </button>
+
+            <button class="language-option" data-lang="ca" type="button">
+              CA
+            </button>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            type="button"
+            aria-label="Cambiar tema"
+          >
+            <i class="ti ti-sun-high" id="theme-toggle-icon"></i>
+          </button>
+
+          <!-- Voice Control -->
+          <button
+            class="audio-toggle"
+            id="audio-toggle"
+            type="button"
+            aria-label="Activar lectura por voz"
+            aria-pressed="false"
+          >
+            <i class="ti ti-volume-off" id="audio-toggle-icon"></i>
+          </button>
+
+          <!-- Live Data -->
+          <span class="live-pill">
+            <span class="live-pill-dot"></span>
+            <span class="live-pill-text" data-i18n="live-data">Live data</span>
+          </span>
+
+          <!-- Config -->
+          <button class="settings-button" id="settings-button" type="button" 
+                   aria-label="Abrir configuración" aria-expanded="false">
+            <i class="ti ti-settings"></i>
+          </button>
+        </div>
+
+        <!-- Settings Popover -->
+        <div class="settings-popover" id="settings-popover" aria-hidden="true">
+          <div class="settings-popover-header">
+            <strong data-i18n="settingsTitle">Configuración</strong>
+          </div>
+
+          <div class="settings-group">
+            <span data-i18n="settingsLanguage">Idioma</span>
+
+            <div class="settings-actions">
+              <button type="button" data-settings-lang="es">ES</button>
+              <button type="button" data-settings-lang="ca">CA</button>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <span data-i18n="settingsTheme">Tema</span>
+
+            <button type="button" id="settings-theme-toggle" data-i18n="settingsThemeToggle">
+              Cambiar tema
+            </button>
+          </div>
+
+          <div class="settings-group">
+            <span data-i18n="settingsAudio">Audio</span>
+
+            <button type="button" id="settings-audio-toggle" data-i18n="settingsAudioToggle">
+              Activar / desactivar voz
+            </button>
+          </div>
+
+          <div class="settings-status">
+            <span class="live-pill-dot"></span>
+            <span data-i18n="live-data">Live data</span>
+          </div>
+        </div>
+      </header>
+
+      <WeatherMap />
+    </main>
+
+    <script type="module" src="/src/scripts/language.js"></script>
+    <script type="module" src="/src/scripts/weather-map.js"></script>
+    <script type="module" src="/src/scripts/theme.js"></script>
+    <script type="module" src="/src/scripts/audio.js"></script>
+    <script type="module" src="/src/scripts/settings.js"></script>
+    
+  </body>
+</html>

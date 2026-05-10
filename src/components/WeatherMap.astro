@@ -1,0 +1,151 @@
+---
+import "@tabler/icons-webfont/dist/tabler-icons.min.css";
+---
+
+<section class="weather-layout">
+  <div class="map-card">
+    <div class="map-header">
+      <div>
+        <p class="eyebrow" data-i18n="interactiveMap">
+          Mapa interactivo
+        </p>
+
+        <h2 data-i18n="regions">
+          Comarcas de Catalunya
+        </h2>
+      </div>
+
+      <div class="map-status" id="map-status">
+        Cargando mapa...
+      </div>
+    </div>
+
+    <div class="map-stage">
+      <svg
+        id="catalunya-map"
+        class="catalunya-map"
+        viewBox="0 0 1000 1000"
+        role="img"
+        aria-label="Mapa interactivo de Catalunya por comarcas"
+      ></svg>
+
+      <div class="map-tooltip" id="map-tooltip" aria-hidden="true">
+        <strong id="tooltip-comarca">Comarca</strong>
+        <small id="tooltip-capital">Capital</small>
+        <img id="tooltip-icon" src="/cities/building.svg" alt="" />
+        <span id="tooltip-temp">--°</span>
+      </div>
+    </div>
+  </div>
+
+  <aside class="weather-panel" id="weather-panel">
+    <div class="weather-hero">
+      <img
+        id="weather-image"
+        class="weather-image"
+        src="/cities/building.svg"
+        alt="Imagen de la capital seleccionada"
+        loading="lazy"
+        decoding="async"
+      />
+
+      <div class="weather-hero-overlay"></div>
+
+      <div class="weather-hero-content">
+        <h2 id="panel-comarca">
+          Selecciona una comarca
+        </h2>
+
+        <p class="weather-capital" id="panel-capital">
+          Catalunya
+        </p>
+      </div>
+    </div>
+
+    <div class="weather-panel-content">
+      <div class="weather-current weather-animate-section">
+        <img
+          id="panel-weather-icon"
+          class="weather-icon"
+          src="/cities/building.svg"
+          alt="Estado meteorológico"
+          width="88"
+          height="88"
+          loading="lazy"
+          decoding="async"
+        />
+
+        <div class="weather-temp">
+          <span id="panel-temperature">--</span>
+          <small>°C</small>
+        </div>
+
+        <div class="weather-state">
+          <p id="panel-weather-label">
+            Esperando selección
+          </p>
+
+          <p id="panel-updated">
+            Selecciona una comarca en el mapa
+          </p>
+        </div>
+      </div>
+
+      <div class="weather-hourly weather-animate-section" id="weather-hourly">
+        <!-- JS pinta aquí la previsión horaria -->
+      </div>
+
+      <div class="weather-details weather-animate-section">
+        <div class="weather-detail-row">
+          <span>
+            <i class="ti ti-droplet"></i>
+            <span data-i18n="humidity">Humedad</span>
+          </span>
+          <strong id="panel-humidity">--%</strong>
+        </div>
+
+        <div class="weather-detail-row">
+          <span>
+            <i class="ti ti-wind"></i>
+            <span data-i18n="wind">Viento</span>
+          </span>
+          <strong id="panel-wind">-- km/h</strong>
+        </div>
+
+        <div class="weather-detail-row">
+          <span>
+            <i class="ti ti-thermometer"></i>
+            <span data-i18n="apparent">Sensación</span>
+          </span>
+          <strong id="panel-apparent">--°</strong>
+        </div>
+
+        <div class="weather-detail-row">
+          <span>
+            <i class="ti ti-cloud-rain"></i>
+            <span data-i18n="rain">Probabilidad de lluvia</span>
+          </span>
+          <strong id="panel-rain">--%</strong>
+        </div>
+
+        <div class="weather-detail-row">
+          <span>
+            <i class="ti ti-arrows-vertical"></i>
+            <span data-i18n="pressure">Presión</span>
+          </span>
+          <strong id="panel-pressure">-- hPa</strong>
+        </div>
+      </div>
+
+      <div class="weather-weekly-block weather-animate-section">
+        <h3 data-i18n="forecast-7days">
+          Previsión 7 días
+        </h3>
+
+        <div class="weather-weekly" id="weather-weekly">
+          <!-- JS pinta aquí la previsión diaria -->
+        </div>
+      </div>
+    </div>
+  </aside>
+</section>

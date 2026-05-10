@@ -1,0 +1,19 @@
+{
+  "name": "meteo-cat-interactive",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@meteocons/svg": "^0.1.0",
+    "@tabler/icons-webfont": "^3.44.0",
+    "astro": "^6.3.1"
+  }
+}
