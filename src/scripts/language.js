@@ -26,6 +26,8 @@ const translations = {
     settingsThemeToggle: "Cambiar tema",
     settingsAudio: "Audio",
     settingsAudioToggle: "Activar / desactivar voz",
+
+    footerText:"Interactive weather experience for Catalunya built with Astro and modern web technologies.",
   },
 
   ca: {
@@ -50,6 +52,8 @@ const translations = {
     settingsThemeToggle: "Canviar tema",
     settingsAudio: "Àudio",
     settingsAudioToggle: "Activar / desactivar veu",
+
+    footerText:"Experiència meteorològica interactiva per Catalunya desenvolupada amb Astro i tecnologies web modernes.",
   }
 };
 
