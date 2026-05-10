@@ -2,6 +2,7 @@
 
 Interactive weather application for Catalunya built with Astro and modern frontend technologies.
 The project combines an interactive SVG map with real-time weather data, multilingual support, accessibility features, and responsive UI design.
+<img width="1262" height="857" alt="image" src="https://github.com/user-attachments/assets/9bf6d606-6436-4c4a-82b1-486fdd6eadfe" />
 
 ---
 
