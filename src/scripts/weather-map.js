@@ -2,10 +2,10 @@ import {
   weatherCodeToDescription,
   weatherCodeToIcon
 } from "../utils/weatherIcons.js";
-
+import { fetchWeather } from "../services/weatherService.js";
+import { comarquesWeatherPoints } from "../data/comarquesWeatherPoints.js";
 // URLs de los recursos
 const MAP_URL =  `${import.meta.env.BASE_URL}maps/catalunya-comarques.json`;
-const WEATHER_URL =  `${import.meta.env.BASE_URL}api/weather.json`;
 const FALLBACK_IMAGE = `${import.meta.env.BASE_URL}cities/building.svg`;
 
 // Elementos del mapa y estado
@@ -35,13 +35,14 @@ const tooltipCapital = document.querySelector("#tooltip-capital");
 const tooltipIcon = document.querySelector("#tooltip-icon");
 const tooltipTemp = document.querySelector("#tooltip-temp");
 const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-
+const WEATHER_CACHE_TTL = 10 * 60 * 1000;
 const AUDIO_KEY = "catalunya-meteo-audio-enabled";
 
 // Estado de la aplicación
 let selectedPath = null;
 let selectedComarcaName = null;
-let weatherData = [];
+let weatherCache = new Map();
+let comarcaPoints = new Map();
 
 if ("speechSynthesis" in window) {
   window.speechSynthesis.onvoiceschanged = () => {
@@ -54,11 +55,8 @@ initMap();
 // Funciones principales
 async function initMap() {
   try {
-    const [geojson] = await Promise.all([
-      loadMapData(),
-      loadWeatherData()
-    ]);
-
+    const geojson = await loadMapData();
+    buildComarcaPointsCache();
     if (!geojson.features || geojson.features.length === 0) {
       throw new Error("El GeoJSON no contiene features.");
     }
@@ -85,21 +83,7 @@ async function loadMapData() {
   return await response.json();
 }
 
-async function loadWeatherData() {
-  try {
-    const response = await fetch(WEATHER_URL);
 
-    if (!response.ok) {
-      throw new Error(`No se pudo cargar weather.json: ${response.status}`);
-    }
-
-    const data = await response.json();
-    weatherData = data.items || [];
-  } catch (error) {
-    console.error("[weather]", error);
-    weatherData = [];
-  }
-}
 
 // Funciones de renderizado y lógica de interacción
 function hideAppLoader() {
@@ -125,20 +109,26 @@ function renderGeoJSON(geojson) {
     if (!pathData) return;
 
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    const center = getFeatureCenter(feature);
 
     path.setAttribute("d", pathData);
     path.classList.add("comarca-path");
     path.dataset.comarca = comarcaName;
     path.dataset.comarcaKey = toComarcaKey(comarcaName);
+    path.dataset.lat = center.lat;
+    path.dataset.lon = center.lon;
     path.setAttribute("tabindex", "0");
     path.setAttribute("role", "button");
     path.setAttribute("aria-label", comarcaName);
 
-    path.addEventListener("mouseenter", (event) => {
+    path.addEventListener("mouseenter", async (event) => {
+      await updateWeatherForComarca(comarcaName);
+
       previewComarca(comarcaName);
-        if (canHover) {
-          showMapTooltip(event, comarcaName);
-        }
+
+      if (canHover) {
+        showMapTooltip(event, comarcaName);
+      }
     });
 
     path.addEventListener("mousemove", (event) => {
@@ -174,20 +164,23 @@ function renderGeoJSON(geojson) {
 }
 
 function selectRandomInitialComarca() {
-  if (!weatherData.length) return;
-
   const paths = Array.from(document.querySelectorAll(".comarca-path"));
 
-  const selectablePaths = paths.filter((path) => {
-    return getWeatherForComarca(path.dataset.comarca);
-  });
+  if (!paths.length) return;
 
-  if (!selectablePaths.length) return;
-
-  const randomIndex = Math.floor(Math.random() * selectablePaths.length);
-  const randomPath = selectablePaths[randomIndex];
+  const randomIndex = Math.floor(Math.random() * paths.length);
+  const randomPath = paths[randomIndex];
 
   selectComarca(randomPath, randomPath.dataset.comarca);
+}
+
+function buildComarcaPointsCache() {
+  comarcaPoints = new Map(
+    comarquesWeatherPoints.map((item) => [
+      toComarcaKey(item.id || item.comarca),
+      item
+    ])
+  );
 }
 
 function previewComarca(comarcaName) {
@@ -196,7 +189,7 @@ function previewComarca(comarcaName) {
   }
 }
 
-function selectComarca(path, comarcaName) {
+async function selectComarca(path, comarcaName) {
   if (selectedPath) {
     selectedPath.classList.remove("is-selected");
   }
@@ -206,9 +199,45 @@ function selectComarca(path, comarcaName) {
 
   selectedPath.classList.add("is-selected");
 
+  await updateWeatherForComarca(comarcaName);
   updatePanel(comarcaName);
   speakSelectedComarca(comarcaName);
 }
+
+async function updateWeatherForComarca(comarcaName) {
+  const key = toComarcaKey(comarcaName);
+  const cached = weatherCache.get(key);
+
+  if (cached && Date.now() - cached.timestamp < WEATHER_CACHE_TTL) {
+    return;
+  }
+
+  const point = comarcaPoints.get(key);
+
+  if (!point) {
+    console.warn("[missing-comarca-point]", comarcaName);
+    return;
+  }
+
+  const lat = point.lat ?? point.latitude;
+  const lon = point.lon ?? point.longitude;
+
+  const weather = await fetchWeather(lat, lon);
+
+  weatherCache.set(key, {
+    timestamp: Date.now(),
+    data: {
+      id: point.id,
+      comarca: point.comarca,
+      capital: point.capital,
+      image: point.image,
+      lat,
+      lon,
+      weather
+    }
+  });
+}
+
 
 function updatePanel(comarcaName) {
   startAsideAnimation();
@@ -324,13 +353,11 @@ function renderWeeklyForecast(items) {
 
 function getWeatherForComarca(comarcaName) {
   const key = toComarcaKey(comarcaName);
+  const cached = weatherCache.get(key);
 
-  return weatherData.find((item) => {
-    return (
-      toComarcaKey(item.comarca) === key ||
-      toComarcaKey(item.id) === key
-    );
-  });
+  if (!cached) return null;
+
+  return cached.data;
 }
 
 function getComarcaName(feature, index) {
@@ -379,6 +406,23 @@ function polygonToPath(polygon, project) {
       );
     })
     .join(" ");
+}
+
+function getFeatureCenter(feature) {
+  let totalLng = 0;
+  let totalLat = 0;
+  let count = 0;
+
+  walkCoordinates(feature.geometry.coordinates, ([lng, lat]) => {
+    totalLng += lng;
+    totalLat += lat;
+    count++;
+  });
+
+  return {
+    lon: totalLng / count,
+    lat: totalLat / count
+  };
 }
 
 function getBounds(geojson) {
